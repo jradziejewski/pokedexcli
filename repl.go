@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/jradziejewski/pokedexcli/internal/pokeapi"
 )
 
 type cliCommand struct {
@@ -42,7 +44,7 @@ func commandHelp() error {
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage:")
 	fmt.Println()
-	for _, command := range commandMap {
+	for _, command := range commands {
 		fmt.Printf("%s: %s\n", command.name, command.description)
 	}
 	return nil
@@ -54,7 +56,7 @@ func cleanInput(text string) []string {
 }
 
 func mapCommand(commandName string) func() error {
-	command, ok := commandMap[commandName]
+	command, ok := commands[commandName]
 	if ok {
 		return command.callback
 	} else {
@@ -64,10 +66,10 @@ func mapCommand(commandName string) func() error {
 	return func() error { return nil }
 }
 
-var commandMap map[string]cliCommand
+var commands map[string]cliCommand
 
 func initCommands() {
-	commandMap = map[string]cliCommand{
+	commands = map[string]cliCommand{
 		"exit": {
 			name:        "exit",
 			description: "Exit the Pokedex",
